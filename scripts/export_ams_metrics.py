@@ -25,6 +25,7 @@ import logging
 import urllib2
 import json
 import datetime
+import time
 
 AMS_HOSTNAME = 'localhost'
 AMS_PORT = '6188'
@@ -115,6 +116,16 @@ def export_ams_metrics():
 
   pass
 
+def get_epoch(input):
+  if (len(input) == 13):
+    return int(input)
+  elif (len(input) == 20):
+    return int(time.mktime(datetime.datetime.strptime(input,'%Y-%m-%dT%H:%M:%SZ').timetuple())*1000)
+  else:
+    return -1
+
+  pass
+
 #
 # Main.
 #
@@ -154,9 +165,9 @@ def main():
   parser.add_option("-r", "--precision", dest="precision",
                   default='minutes', help="AMS API precision, default = minutes.")
   parser.add_option("-b", "--start_time", dest="start_time",
-                    help="Start time in milliseconds since epoch.")
+                    help="Start time in milliseconds since epoch or UTC timestamp in YYYY-MM-DDTHH:mm:ssZ format.")
   parser.add_option("-e", "--end_time", dest="end_time",
-                    help="End time in milliseconds since epoch.")
+                    help="End time in milliseconds since epoch or UTC timestamp in YYYY-MM-DDTHH:mm:ssZ format.")
 
   (options, args) = parser.parse_args()
 
@@ -215,23 +226,23 @@ def main():
   global OUT_DIR
   OUT_DIR = output_dir
 
-  if not options.start_time or len(str(options.start_time)) != 13:
-    logger.warn('No start time provided, or it is in the wrong format. Please '
-                'provide milliseconds since epoch.')
-    logger.info('Aborting...')
-    sys.exit(1)
-
   global START_TIME
-  START_TIME = options.start_time
+  START_TIME = get_epoch(options.start_time)
 
-  if not options.end_time or len(str(options.end_time)) != 13:
-    logger.warn('No end time provided, or it is in the wrong format. Please '
-                'provide milliseconds since epoch.')
+  if START_TIME == -1:
+    logger.warn('No start time provided, or it is in the wrong format. Please '
+                'provide milliseconds since epoch or a value in YYYY-MM-DDTHH:mm:ssZ format')
     logger.info('Aborting...')
     sys.exit(1)
 
   global END_TIME
-  END_TIME = options.end_time
+  END_TIME = get_epoch(options.end_time)
+
+  if END_TIME == -1:
+    logger.warn('No end time provided, or it is in the wrong format. Please '
+                'provide milliseconds since epoch or a value in YYYY-MM-DDTHH:mm:ssZ format')
+    logger.info('Aborting...')
+    sys.exit(1)
 
   export_ams_metrics()
 
