@@ -29,7 +29,7 @@ APP_ENVIRONMENT = {
     'dataframe': None,
     'metrics': None,
     'fields_regex': re.compile(
-        '(?P<metric>[A-Za-z0-9/_-]+)(?:\._(?P<operation>avg|sum|min|max))?' +
+        '(?P<metric>[A-Za-z0-9/_=-]+)(?:\._(?P<operation>avg|sum|min|max))?' +
         '\[(?P<start>\d+),(?P<end>\d+),(?P<limit>\d+)\]'),
     'fields_parser': None,
     'last_metric': ""
