@@ -88,6 +88,7 @@ def load_dataframe(filename, source):
     appid = metrics['appid']
     real_metrics = metrics['metrics']
     metricname = "metrics/" + metrics['metricname'].replace('.', '/')
+    print "Loaded Metric " + metricname
 
     df = pd.DataFrame(columns=('hostname', 'appid', 'timestamp', 'metricvalue',
                                'metricname'), index=['metricname',
@@ -126,9 +127,11 @@ def get_metrics_dirs(d):
 def read_all_metric_files(root_dir):
     df = None
     for metric_dir in get_metrics_dirs(root_dir):
+        print "Processing directory " + metric_dir
         for root, dirnames, filenames in os.walk(metric_dir):
             for f in filenames:
                 full_path = os.path.join(root, f)
+                print "Processing file " + full_path
                 df = load_dataframe(full_path, df)
     return df
 
