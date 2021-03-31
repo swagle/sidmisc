@@ -3,7 +3,7 @@ Flask-Cors==2.1.2
 Flask-RESTful==0.3.5
 Jinja2==2.8
 MarkupSafe==0.23
-Werkzeug==0.11.3
+Werkzeug==0.15.3
 aniso8601==1.1.0
 itsdangerous==0.24
 numpy==1.10.4
